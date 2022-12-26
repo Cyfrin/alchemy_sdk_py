@@ -1,13 +1,32 @@
 from setuptools import setup
 import os
+import sys
+
+CURRENT_PYTHON = sys.version_info[:2]
+REQUIRED_PYTHON = (3, 7)
+
+if CURRENT_PYTHON < REQUIRED_PYTHON:
+    sys.stderr.write(
+        """
+==========================
+Unsupported Python version
+==========================
+This version of Requests requires at least Python {}.{}, but
+you're trying to install it on Python {}.{}. To resolve this,
+consider upgrading to a supported Python version.
+""".format(
+            *(REQUIRED_PYTHON + CURRENT_PYTHON)
+        )
+    )
+    sys.exit(1)
 
 
 here = os.path.abspath(os.path.dirname(__file__))
-with open("README.md", "r", "utf-8") as f:
+with open(os.path.join(here, "README.md"), "r") as f:
     readme = f.read()
 
 about = {}
-with open(os.path.join(here, "alchemy_sdk_py", "__version__.py"), "r", "utf-8") as f:
+with open(os.path.join(here, "alchemy_sdk_py", "__version__.py"), "r") as f:
     exec(f.read(), about)
 
 setup(
@@ -36,5 +55,4 @@ setup(
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
     ],
-    packages=["alchemy_sdk_py"],
 )

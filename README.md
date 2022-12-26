@@ -1,4 +1,4 @@
-# alchemy_sdk_py
+# alchemy_sdk_py (Pre-Alpha)
 An SDK to use the [Alchemy API](https://www.alchemy.com/)
 
 
@@ -37,4 +37,15 @@ import alchemy_sdk_py as alchemy
 
 current_block = alchemy.get_current_block()
 print(current_block)
+```
+
+# Uploading to PyPI 
+
+_For maintainers only. You can view the [docs](https://packaging.python.org/en/latest/tutorials/packaging-projects/#generating-distribution-archives) to learn more._ 
+
+_Note: `setup.py sdist` is deprecated. Use `python3 -m build` instead._
+
+```
+python3 -m build
+python3 -m twine upload dist/*
 ```
