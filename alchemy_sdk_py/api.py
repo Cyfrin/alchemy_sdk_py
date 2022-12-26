@@ -1,4 +1,5 @@
 import os
+from typing import Tuple
 import requests
 import json
 from decimal import Decimal
@@ -33,17 +34,20 @@ def get_current_block() -> int:
     return result
 
 
-def get_asset_transfers(node_address: str, block_start: int, block_end: int) -> list:
+def get_asset_transfers(
+    from_address: str, from_block: int, to_block: int, max_count=1000, page_key=None
+) -> Tuple[list, str]:
     """
     params:
-        node_address: wallet address associated with the OCR node
+        from_address: Address to look for transactions from
         block_start: INT
         block_end: INT
-    returns: A dictionary, internal/external asset transfers for the address
+    returns: [list, str]
+        A Tuple, index 0 is the list of transfers, index 1 is the page key or None
     """
-    from_block = str(hex(block_start))
-    to_block = str(hex(block_end))
-    address = node_address.lower()
+    from_block = str(hex(from_block))
+    to_block = str(hex(to_block))
+    address = from_address.lower()
     payload = {
         "id": 1,
         "jsonrpc": "2.0",
@@ -53,16 +57,21 @@ def get_asset_transfers(node_address: str, block_start: int, block_end: int) -> 
                 "fromBlock": from_block,
                 "toBlock": to_block,
                 "fromAddress": address,
-                "category": ["external", "internal"],
+                "category": ["external", "internal", "erc20", "erc721", "specialnft"],
                 "excludeZeroValue": False,
+                "maxCount": hex(max_count),
             }
         ],
     }
+    if page_key:
+        payload["params"][0]["pageKey"] = page_key
     response = requests.post(BASE_URL, json=payload, headers=HEADERS)
-    response = json.loads(response.text)
-    result = response["result"]
+    json_response = response.json()
+    result = json_response["result"]
     transfers = result["transfers"]
-    return transfers
+    if "pageKey" in result:
+        return transfers, result["pageKey"]
+    return transfers, None
 
 
 def get_transaction_receipt(transaction_hash: str):
@@ -79,8 +88,8 @@ def get_transaction_receipt(transaction_hash: str):
         "params": [transaction_hash],
     }
     response = requests.post(BASE_URL, json=payload, headers=HEADERS)
-    response = json.loads(response.text)
-    result = response["result"]
+    json_respnse = response.json()
+    result = json_respnse["result"]
     return result
 
 
