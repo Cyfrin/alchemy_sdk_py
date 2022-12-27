@@ -1,5 +1,5 @@
 import os
-from typing import Tuple
+from typing import Optional, Tuple
 import requests
 import json
 from decimal import Decimal
@@ -8,16 +8,6 @@ from datetime import datetime
 API_KEY = os.getenv("ALCHEMY_API_KEY")
 BASE_URL = f"https://eth-mainnet.g.alchemy.com/v2/{API_KEY}"
 HEADERS = {"accept": "application/json", "content-type": "application/json"}
-
-
-def set_api_key(key: str):
-    """
-    params:
-        key: API key
-    returns:
-        None
-    """
-    os.environ["ALCHEMY_API_KEY"] = key
 
 
 def get_current_block() -> int:
@@ -35,19 +25,29 @@ def get_current_block() -> int:
 
 
 def get_asset_transfers(
-    from_address: str, from_block: int, to_block: int, max_count=1000, page_key=None
+    from_address: Optional[str] = None,
+    to_address: Optional[str] = None,
+    from_block: Optional[int] = 0,
+    to_block: Optional[int] = get_current_block(),
+    max_count: Optional[int] = 1000,
+    page_key: Optional[str] = None,
+    contract_addresses: Optional[list] = None,
 ) -> Tuple[list, str]:
     """
     params:
         from_address: Address to look for transactions from
-        block_start: INT
-        block_end: INT
+        from_block: INT
+        to_block: INT
+        max_count: Max number of transactions to return
+        page_key: A unique key to get the next page of results
+        contract_addresses: A list of contract addresses to filter by (for erc20, erc721, specialnft)
     returns: [list, str]
         A Tuple, index 0 is the list of transfers, index 1 is the page key or None
     """
     from_block = str(hex(from_block))
     to_block = str(hex(to_block))
-    address = from_address.lower()
+    from_address = from_address.lower() if from_address else None
+    to_address = to_address.lower() if to_address else None
     payload = {
         "id": 1,
         "jsonrpc": "2.0",
@@ -56,7 +56,6 @@ def get_asset_transfers(
             {
                 "fromBlock": from_block,
                 "toBlock": to_block,
-                "fromAddress": address,
                 "category": ["external", "internal", "erc20", "erc721", "specialnft"],
                 "excludeZeroValue": False,
                 "maxCount": hex(max_count),
@@ -65,6 +64,13 @@ def get_asset_transfers(
     }
     if page_key:
         payload["params"][0]["pageKey"] = page_key
+    if contract_addresses:
+        payload["params"][0]["contractAddresses"] = contract_addresses
+    if from_address:
+        payload["params"][0]["fromAddress"] = from_address
+    if to_address:
+        payload["params"][0]["toAddress"] = to_address
+
     response = requests.post(BASE_URL, json=payload, headers=HEADERS)
     json_response = response.json()
     result = json_response["result"]

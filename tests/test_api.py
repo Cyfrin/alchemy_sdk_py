@@ -26,7 +26,9 @@ def test_get_asset_transfers_page_key():
     address = "0x165Ff6730D449Af03B4eE1E48122227a3328A1fc"
 
     # Act
-    _, page_key = get_asset_transfers(address, start_block, end_block)
+    _, page_key = get_asset_transfers(
+        from_address=address, from_block=start_block, to_block=end_block
+    )
 
     # Assert
     assert page_key is not None
@@ -39,7 +41,9 @@ def test_get_asset_transfers_page_key_is_none():
     address = "0x165Ff6730D449Af03B4eE1E48122227a3328A1fc"
 
     # Act
-    _, page_key = get_asset_transfers(address, start_block, end_block)
+    _, page_key = get_asset_transfers(
+        from_address=address, start_block=start_block, end_block=end_block
+    )
 
     # Assert
     assert page_key is None

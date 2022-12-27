@@ -4,5 +4,5 @@ from .api import (
     get_transaction_receipt,
     get_events,
     get_block_datetime,
-    set_api_key,
 )
+from .auth import set_api_key
