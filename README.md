@@ -18,22 +18,41 @@ pip3 install alchemy_sdk_py
 ## Quickstart
 
 ### Get an API Key
-After [installing](#installation), you'll need to sign up for an API key and set it as an `ALCHEMY_API_KEY` environment variable. 
+After [installing](#installation), you'll need to sign up for an API key and set it as an `ALCHEMY_API_KEY` environment variable. You can place them in a `.env` file if you like *just please don't push the `.env` file to GitHub*.
+
+`.env`
+```bash
+ALCHEMY_API_KEY="asdfasfsfasf
+```
 
 If you're unfamiliar with environment variables, you can use the API to set the key directly using the SDK - please don't do this in production code. 
 
 ```python
-import alchemy_sdk_py
+from alchemy_sdk_py import Alchemy
 
-alchemy_sdk_py.set_api_key("YOUR_API_KEY")
+alchemy = Alchemy(api_key="asdfasfsfasf", network="eth_mainnet")
+```
+If you have your environment variable set, and you want to use eth mainnet, you can just do this: 
+
+```python
+from alchemy_sdk_py import Alchemy
+alchemy = Alchemy()
 ```
 
-This will make the key availible for the duration of your script. 
+You can also set the network ID using the chainId, or hex, and even update it later. 
+```python
+# For Goerli ETH
+alchemy = Alchemy(network=5)
+# For Polygon ("0x89" is hex for 137)
+alchemy.set_network("0x89")
+```
 
 ### Useage 
 
 ```python
-import alchemy_sdk_py as alchemy
+from alchemy_sdk_py import Alchemy
+
+alchemy = Alchemy()
 
 current_block = alchemy.get_current_block()
 print(current_block)

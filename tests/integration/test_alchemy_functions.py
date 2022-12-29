@@ -1,5 +1,4 @@
 from alchemy_sdk_py import Alchemy
-import os
 
 
 def test_set_api_key(alchemy, mock_env_missing):

@@ -365,7 +365,10 @@ class Alchemy:
         returns:
             None
         """
-        self.network = network
+        self.network = Network(network)
+        url_network_name = self.network.name.replace("_", "-")
+        self.base_url_without_key = f"https://{url_network_name}.g.alchemy.com/v2/"
+        self.base_url = f"{self.base_url_without_key}{self.api_key}"
 
     def set_settings(self, key: Optional[str] = None, network: Optional[str] = None):
         """
