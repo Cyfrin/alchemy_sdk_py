@@ -160,6 +160,48 @@ class Alchemy:
         result = int(json_response.get("result"), 16)
         return result
 
+    def _get_all_asset_transfers(
+        self,
+        from_address: Optional[str] = None,
+        to_address: Optional[str] = None,
+        from_block: Union[int, str, None] = 0,
+        to_block: Union[int, str, None] = None,
+        contract_addresses: Optional[list] = None,
+        category: Optional[list[str]] = [
+            "external",
+            "internal",
+            "erc20",
+            "erc721",
+            "specialnft",
+        ],
+    ) -> list:
+        """
+        params:
+            from_address: Address to look for transactions from
+            from_block: int (1), hex ("0x1"), or str "1"
+            to_block: int (1), hex ("0x1"), or str "1"
+            contract_addresses: List of contract addresses to filter by
+            category: List of categories to filter by
+        returns:
+            a list of asset transfers
+        """
+        total_transfers = []
+        page_key = None
+        first_run = True
+        while page_key is not None or first_run:
+            first_run = False
+            transfers, page_key = self.get_asset_transfers(
+                from_address=from_address,
+                to_address=to_address,
+                from_block=from_block,
+                to_block=to_block,
+                page_key=page_key,
+                contract_addresses=contract_addresses,
+                category=category,
+            )
+            total_transfers.extend(transfers)
+        return total_transfers, None
+
     def get_asset_transfers(
         self,
         from_address: Optional[str] = None,
@@ -176,6 +218,7 @@ class Alchemy:
             "erc721",
             "specialnft",
         ],
+        get_all_flag: Optional[bool] = False,
     ) -> Tuple[list, str]:
         """
         params:
@@ -196,6 +239,15 @@ class Alchemy:
         to_block_hex = HexIntStringNumber(to_block).hex
         from_address = from_address.lower() if from_address else None
         to_address = to_address.lower() if to_address else None
+        if get_all_flag:
+            return self._get_all_asset_transfers(
+                from_address=from_address,
+                to_address=to_address,
+                from_block=from_block_hex,
+                to_block=to_block_hex,
+                contract_addresses=contract_addresses,
+                category=category,
+            )
         payload = {
             "id": 1,
             "jsonrpc": "2.0",

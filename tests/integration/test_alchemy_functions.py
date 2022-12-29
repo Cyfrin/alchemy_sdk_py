@@ -43,3 +43,24 @@ def test_get_asset_transfers_page_key_is_none(alchemy_with_key):
 
     # Assert
     assert page_key is None
+
+
+def test_get_asset_transfers_all(alchemy_with_key):
+    # Arrange
+    start_block = 0
+    end_block = 16291530
+    to_address = "0xa5D0084A766203b463b3164DFc49D91509C12daB"
+    category = ["erc20"]
+    expected_transfers_number = 14185
+
+    # Act
+    transfers, _ = alchemy_with_key.get_asset_transfers(
+        to_address=to_address,
+        from_block=start_block,
+        to_block=end_block,
+        get_all_flag=True,
+        category=category,
+    )
+
+    # Assert
+    assert len(transfers) == expected_transfers_number
