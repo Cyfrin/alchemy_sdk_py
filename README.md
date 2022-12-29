@@ -2,6 +2,24 @@
 An SDK to use the [Alchemy API](https://www.alchemy.com/)
 
 
+<br/>
+<p align="center">
+<a href="https://alchemy.com/?a=673c802981" target="_blank">
+<img src="./img/logo.png" width="225" alt="Alchemy logo">
+</a>
+</p>
+<br/>
+
+- [alchemy\_sdk\_py (Pre-Alpha)](#alchemy_sdk_py-pre-alpha)
+- [Getting Started](#getting-started)
+  - [Requirements](#requirements)
+  - [Installation](#installation)
+  - [Quickstart](#quickstart)
+    - [Get an API Key](#get-an-api-key)
+    - [Useage](#useage)
+- [Currently not implemented](#currently-not-implemented)
+
+
 # Getting Started
 
 ## Requirements 
