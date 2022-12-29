@@ -39,13 +39,7 @@ current_block = alchemy.get_current_block()
 print(current_block)
 ```
 
-# Uploading to PyPI 
+# Currently not implemented
 
-_For maintainers only. You can view the [docs](https://packaging.python.org/en/latest/tutorials/packaging-projects/#generating-distribution-archives) to learn more._ 
-
-_Note: `setup.py sdist` is deprecated. Use `python3 -m build` instead._
-
-```
-python3 -m build
-python3 -m twine upload dist/*
-```
+- [ ] `batchRequests`
+- [ ] `web sockets`

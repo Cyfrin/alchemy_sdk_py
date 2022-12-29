@@ -13,6 +13,7 @@ We set up a virtual environment so that packages you install get installed to an
 Then, install the development dependencies.
 
 ```
+pip install -r requirements.txt
 pip install -r requirements-dev.txt
 ```
 
@@ -29,10 +30,31 @@ The `pip install -e .` command installs our package in "editable" mode. This mea
 This would be if you want to run make changes and test them out on your own code in another project. 
 
 
-## Testing
+# Testing
 
 Then, run the tests to make sure everything is working:
 
 ```
 pytest
 ```
+
+## Coverage
+
+To run coverage, run:
+
+```
+coverage run -m pytest
+```
+
+# Uploading to PyPI 
+
+_For maintainers only. You can view the [docs](https://packaging.python.org/en/latest/tutorials/packaging-projects/#generating-distribution-archives) to learn more._ 
+
+_Note: `setup.py sdist` is deprecated. Use `python3 -m build` instead._
+
+```
+python3 -m build
+python3 -m twine upload dist/*
+```
+
+Right now, we have our GitHub actions setup so that every release we push we automatically upload to PyPI.
