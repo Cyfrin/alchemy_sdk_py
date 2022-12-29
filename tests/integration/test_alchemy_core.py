@@ -44,6 +44,6 @@ def test_estimate_gas(alchemy_with_key):
 #     assert response > 0
 
 
-def test_get_block(alchemy_with_key):
-    response = alchemy_with_key.get_block(0)
-    breakpoint()
+# def test_get_block(alchemy_with_key):
+#     response = alchemy_with_key.get_block(0)
+#     breakpoint()
