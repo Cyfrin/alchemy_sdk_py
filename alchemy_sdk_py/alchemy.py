@@ -52,7 +52,7 @@ class Alchemy:
         self.proxy = proxy or {}
 
     ############################################################
-    ################ Core Methods ##############################
+    ################ ETH JSON-RPC Methods ######################
     ############################################################
 
     def call(
@@ -80,6 +80,7 @@ class Alchemy:
         Returns:
             str: The result of the call
         """
+        tag = tag.lower() if isinstance(tag, str) else tag
         payload = {
             "id": 1,
             "jsonrpc": "2.0",
@@ -93,7 +94,7 @@ class Alchemy:
                     "value": HexIntStringNumber(value).hex,
                     "data": data,
                 },
-                tag.lower(),
+                tag,
             ],
         }
         json_response = self._handle_api_call(payload)
@@ -128,7 +129,6 @@ class Alchemy:
         json_response = self._handle_api_call(payload)
         return json_response.get("result")
 
-    # TODO: Currently not working...?
     # def find_contract_deployer(self, contract_address: str) -> str:
     #     """Find the address that deployed a contract
 
@@ -140,11 +140,13 @@ class Alchemy:
     #     """
     #     if not isinstance(contract_address, str):
     #         raise ValueError("contract_address must be a string")
-    #     payload = {
-    #         "contractAddress": contract_address,
-    #     }
-    #     json_response = self._handle_api_call(payload, endpoint="findContractDeployer")
-    #     return json_response.get("result")
+    #     current_block: int = self.get_current_block()
+
+    #     # payload = {
+    #     #     "contractAddress": contract_address,
+    #     # }
+    #     # json_response = self._handle_api_call(payload, endpoint="findContractDeployer")
+    #     # return json_response.get("result")
 
     def get_current_block(self) -> int:
         """
@@ -226,46 +228,179 @@ class Alchemy:
             return transfers, result["pageKey"]
         return transfers, None
 
-    # Also not working?
-    # def get_balance(
-    #     self,
-    #     address: str,
-    #     tag: Union[str, dict, None] = "latest",
-    # ) -> int:
-    #     """
-    #     params:
-    #         address: address to get balance of
-    #         tag:  "latest", "earliest", "pending", or an dict with a block number
-    #         ie: {"blockNumber": "0x1"}
-
-    #     returns:
-    #         balance of address (int)
-    #     """
-    #     tag = tag.lower() if isinstance(tag, str) else tag
-    #     payload = {
-    #         "params": [address, tag],
-    #     }
-    #     json_response = self._handle_api_call(payload, endpoint="getBalance")
-    #     return int(json_response.get("result"), 16)
-
-    def get_block(self, block_number_or_hash: Union[str, int]) -> dict:
+    def get_balance(
+        self,
+        address: str,
+        tag: Union[str, dict, None] = "latest",
+    ) -> int:
         """
         params:
-            block_number: block number to get (can be int, string, or hash)
+            address: address to get balance of
+            tag:  "latest", "earliest", "pending", or an dict with a block number
+            ie: {"blockNumber": "0x1"}
+
         returns:
-            block data
+            balance of address (int)
         """
-        if isinstance(block_number_or_hash, str):
-            if is_hex_int(block_number_or_hash):
-                block_number_or_hash = HexIntStringNumber(block_number_or_hash).hex
-        else:
-            block_number_or_hash = HexIntStringNumber(block_number_or_hash).hex
+        tag = tag.lower() if isinstance(tag, str) else tag
         payload = {
-            "params": [block_number_or_hash],
+            "id": 1,
+            "jsonrpc": "2.0",
+            "method": "eth_getBalance",
+            "params": [address, tag],
         }
-        json_response = self._handle_api_call(payload, endpoint="getBlock")
-        result = json_response.get("result", {})
-        return result
+        json_response = self._handle_api_call(payload)
+        return int(json_response.get("result"), 16)
+
+    def get_code(self, address: str, tag: Union[str, dict, None] = "latest") -> str:
+        """Returns code at a given address.
+
+        Args:
+            address (str): DATA, 20 Bytes - address
+            tag (Union[str, dict, None], optional): tag:  "latest", "earliest", "pending", or an dict with a block number
+            ie: {"blockNumber": "0x1"}. Defaults to "latest".
+
+        Returns:
+            str: Code at given address
+        """
+        tag = tag.lower() if isinstance(tag, str) else tag
+        payload = {
+            "id": 1,
+            "jsonrpc": "2.0",
+            "method": "eth_getCode",
+            "params": [address, tag],
+        }
+        json_response = self._handle_api_call(payload)
+        return json_response.get("result")
+
+    def get_transaction_count(
+        self, address: str, tag: Union[str, dict, None] = "latest"
+    ) -> int:
+        """Returns the number of transactions sent from an address.
+
+        Args:
+            address (str): DATA, 20 Bytes - address
+            tag (Union[str, dict, None], optional): tag:  "latest", "earliest", "pending", or an dict with a block number
+            ie: {"blockNumber": "0x1"}. Defaults to "latest".
+
+        Returns:
+            int: Number of transactions sent from an address
+        """
+        tag = tag.lower() if isinstance(tag, str) else tag
+        payload = {
+            "id": 1,
+            "jsonrpc": "2.0",
+            "method": "eth_getTransactionCount",
+            "params": [address, tag],
+        }
+        json_response = self._handle_api_call(payload)
+        return int(json_response.get("result"), 16)
+
+    def get_storage_at(
+        self,
+        address: str,
+        storage_position: Union[int, str],
+        tag: Union[str, dict, None] = "latest",
+    ) -> str:
+        """Returns the value from a storage position at a given address.
+
+        Args:
+            address (str): DATA, 20 Bytes - address
+            storage_position (Union[int, str]): QUANTITY - integer of the position in the storage.
+            tag (Union[str, dict, None], optional): tag:  "latest", "earliest", "pending", or an dict with a block number
+            ie: {"blockNumber": "0x1"}. Defaults to "latest".
+
+        Returns:
+            str: The value at this storage position.
+        """
+        tag = tag.lower() if isinstance(tag, str) else tag
+        payload = {
+            "id": 1,
+            "jsonrpc": "2.0",
+            "method": "eth_getStorageAt",
+            "params": [address, HexIntStringNumber(storage_position).hex, tag],
+        }
+        json_response = self._handle_api_call(payload)
+        return json_response.get("result")
+
+    def get_block_transaction_count_by_hash(self, block_hash: str) -> int:
+        """Returns the number of transactions in a block from a block matching the given block hash.
+
+        Args:
+            block_hash (str): DATA, 32 Bytes - hash of a block
+
+        Returns:
+            int: Number of transactions in a block from a block matching the given block hash.
+        """
+        payload = {
+            "id": 1,
+            "jsonrpc": "2.0",
+            "method": "eth_getBlockTransactionCountByHash",
+            "params": [block_hash],
+        }
+        json_response = self._handle_api_call(payload)
+        return int(json_response.get("result"), 16)
+
+    def get_block_transaction_count_by_number(self, tag: Union[int, str]) -> int:
+        """Returns the number of transactions in a block from a block matching the given block number.
+
+        Args:
+            tag (Union[int, str]): QUANTITY|TAG - integer of a block number, or the string "earliest", "latest" or "pending", as in the default block parameter.
+            ie: "latest" or "0xe8"
+
+        Returns:
+            int: Number of transactions in a block from a block matching the given block number.
+        """
+        tag_hex = (
+            HexIntStringNumber(tag).hex
+            if tag not in ["latest", "earliest", "pending"]
+            else tag
+        )
+        payload = {
+            "id": 1,
+            "jsonrpc": "2.0",
+            "method": "eth_getBlockTransactionCountByNumber",
+            "params": [tag_hex],
+        }
+        json_response = self._handle_api_call(payload)
+        return int(json_response.get("result"), 16)
+
+    def get_uncle_count_by_blockhash(self, block_hash: str) -> int:
+        """Returns the number of uncles in a block from a block matching the given block hash.
+
+        Args:
+            block_hash (str): DATA, 32 Bytes - hash of a block
+
+        Returns:
+            int: Number of uncles in a block from a block matching the given block hash.
+        """
+        payload = {
+            "id": 1,
+            "jsonrpc": "2.0",
+            "method": "eth_getUncleCountByBlockHash",
+            "params": [block_hash],
+        }
+        json_response = self._handle_api_call(payload)
+        return int(json_response.get("result"), 16)
+
+    # def get_block(self, block_number_or_hash: Union[str, int]) -> dict:
+    #     """
+    #     params:
+    #         block_number: block number to get (can be int, string, or hash)
+    #     returns:
+    #         block data
+    #     """
+    #     if isinstance(block_number_or_hash, str):
+    #         if is_hex_int(block_number_or_hash):
+    #             block_number_or_hash = HexIntStringNumber(block_number_or_hash).hex
+    #     else:
+    #         block_number_or_hash = HexIntStringNumber(block_number_or_hash).hex
+    #     payload = {
+    #         "params": [block_number_or_hash],
+    #     }
+    #     json_response = self._handle_api_call(payload, endpoint="getBlock")
+    #     result = json_response.get("result", {})
+    #     return result
 
     def get_transaction_receipt(self, transaction_hash: str) -> dict:
         """
@@ -316,6 +451,24 @@ class Alchemy:
         }
         json_response = self._handle_api_call(payload)
         result = json_response.get("result", {})
+        return result
+
+    def send_raw_transactions(self, data: str) -> str:
+        """
+        params:
+            data: raw transaction data
+        returns: transaction hash
+
+        Note: I ain't bothering to test this.
+        """
+        payload = {
+            "id": 1,
+            "jsonrpc": "2.0",
+            "method": "eth_sendRawTransaction",
+            "params": [data],
+        }
+        json_response = self._handle_api_call(payload)
+        result = json_response.get("result", "")
         return result
 
     def get_block_by_number():

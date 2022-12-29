@@ -17,6 +17,22 @@ def is_hex_int(string: str) -> bool:
         return False
 
 
+def bytes32_to_text(bytes_to_convert: str) -> str:
+    """
+    params:
+        string: String to convert
+    returns:
+        String converted to text
+    """
+    if not isinstance(bytes_to_convert, str):
+        raise TypeError("string must be a string")
+    bytes_object = bytes.fromhex(bytes_to_convert[2:])  # Strip the "0x" prefix
+    null_byte_index = bytes_object.index(b"\x00")  # Find the null byte
+    bytes_object = bytes_object[:null_byte_index]  # Strip the null byte
+    decoded_string = bytes_object.decode()  # Decode the bytes
+    return decoded_string
+
+
 class HexIntStringNumber:
     def __init__(self, stringIntNumber: Union[str, int, None]):
         self.hex_string = (

@@ -80,3 +80,5 @@ print(current_block)
 
 - [ ] `batchRequests`
 - [ ] `web sockets`
+- [ ] `Notify API`
+- [ ] `Async support`
