@@ -102,7 +102,7 @@ alchemy = Alchemy()
 
 address = "YOUR_ADDRESS_HERE"
 
-transfers, page_key = alchemy_with_key.get_asset_transfers(from_address=address)
+transfers, page_key = alchemy.get_asset_transfers(from_address=address)
 print(transfers)
 # prints every transfer in or out that's ever happened on the address
 ```
@@ -111,7 +111,7 @@ print(transfers)
 
 ```python
 ENS = "0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85"
-contract_metadata = alchemy_with_key.get_contract_metadata(ENS)
+contract_metadata = alchemy.get_contract_metadata(ENS)
 
 print(contract_metadata["contractMetadata"]["openSea"]["collectionName"])
 # prints "ENS: Ethereum Name Service"
