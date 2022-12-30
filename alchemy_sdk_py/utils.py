@@ -1,5 +1,23 @@
 from typing import Union
 
+ETH_NULL_VALUE: str = "0x"
+
+
+def is_hash(string: str) -> bool:
+    """
+    params:
+        string: String to check
+    returns:
+        True if string is a hash, False otherwise
+    """
+    if not type(string) == str:
+        return False
+    if not string.startswith("0x"):
+        return False
+    if not len(string) == 66:
+        return False
+    return True
+
 
 def is_hex_int(string: str) -> bool:
     """

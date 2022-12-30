@@ -76,9 +76,20 @@ current_block = alchemy.get_current_block()
 print(current_block)
 ```
 
+With web3.py
+
+```python
+from alchemy_sdk_py import Alchemy
+from web3 import Web3
+
+alchemy = Alchemy()
+
+w3 = Web3(Web3.HTTPProvider(alchemy.base_url))
+```
+
 # Currently not implemented
 
 - [ ] `batchRequests`
 - [ ] `web sockets`
-- [ ] `Notify API`
+- [ ] `Notify API` & `filers` ie `eth_newFilter`
 - [ ] `Async support`
