@@ -16,8 +16,12 @@ An SDK to use the [Alchemy API](https://www.alchemy.com/)
   - [Installation](#installation)
   - [Quickstart](#quickstart)
     - [Get an API Key](#get-an-api-key)
-    - [Useage](#useage)
-- [Currently not implemented](#currently-not-implemented)
+- [Useage](#useage)
+  - [Get all ERC20, value, and NFT transfers for an address](#get-all-erc20-value-and-nft-transfers-for-an-address)
+  - [Get contract metadata for any NFT](#get-contract-metadata-for-any-nft)
+- [What's here and what's not](#whats-here-and-whats-not)
+  - [What this currently has](#what-this-currently-has)
+  - [Currently not implemented](#currently-not-implemented)
 
 
 # Getting Started
@@ -65,15 +69,16 @@ alchemy = Alchemy(network=5)
 alchemy.set_network("0x89")
 ```
 
-### Useage 
+# Useage 
 
 ```python
 from alchemy_sdk_py import Alchemy
 
 alchemy = Alchemy()
 
-current_block = alchemy.get_current_block()
-print(current_block)
+current_block_number = alchemy.get_current_block_number()
+print(current_block_number)
+# prints the current block number
 ```
 
 With web3.py
@@ -87,9 +92,44 @@ alchemy = Alchemy()
 w3 = Web3(Web3.HTTPProvider(alchemy.base_url))
 ```
 
-# Currently not implemented
+## Get all ERC20, value, and NFT transfers for an address
+
+The following code will get you every transfer in and out of a single wallet address. 
+
+```python
+from alchemy_sdk_py import Alchemy
+alchemy = Alchemy()
+
+address = "YOUR_ADDRESS_HERE"
+
+transfers, page_key = alchemy_with_key.get_asset_transfers(from_address=address)
+print(transfers)
+# prints every transfer in or out that's ever happened on the address
+```
+
+## Get contract metadata for any NFT
+
+```python
+ENS = "0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85"
+contract_metadata = alchemy_with_key.get_contract_metadata(ENS)
+
+print(contract_metadata["contractMetadata"]["openSea"]["collectionName"])
+# prints "ENS: Ethereum Name Service"
+```
+
+# What's here and what's not
+
+## What this currently has
+
+Just about everything in the [Alchemy SDK](https://docs.alchemy.com/reference/alchemy-sdk-quickstart) section of the docs. 
+
+## Currently not implemented
 
 - [ ] `batchRequests`
 - [ ] `web sockets`
-- [ ] `Notify API` & `filers` ie `eth_newFilter`
+- [ ] `Notify API` & `filters` ie `eth_newFilter`
 - [ ] `Async support`
+- [ ] ENS Support for addresses
+- [ ] Double check the NFT, Transact, and Token docs for function
+- [ ] Trace API
+- [ ] Debug API

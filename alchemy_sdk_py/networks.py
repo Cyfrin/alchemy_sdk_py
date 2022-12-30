@@ -1,6 +1,32 @@
 from .errors import NETWORK_INITIALIZATION_ERROR
 from typing import Union
-from .sdk_settings import network_id_map
+
+network_id_map = {
+    "eth_mainnet": "1",
+    "eth_ropsten": "3",
+    "eth_rinkeby": "4",
+    "eth_goerli": "5",
+    "eth_kovan": "42",
+    "opt_mainnet": "10",
+    "opt_goerli": "420",
+    "arb_mainnet": "42161",
+    "arb_rinkeby": "421611",
+    "matic_mainnet": "137",
+    "matic_mumbai": "80001",
+    "astar_mainnet": "592",
+    "1": "eth_mainnet",
+    "3": "eth_ropsten",
+    "4": "eth_rinkeby",
+    "5": "eth_goerli",
+    "42": "eth_kovan",
+    "10": "opt_mainnet",
+    "420": "opt_goerli",
+    "42161": "arb_mainnet",
+    "421611": "arb_rinkeby",
+    "137": "matic_mainnet",
+    "80001": "matic_mumbai",
+    "592": "astar_mainnet",
+}
 
 
 class Network:
@@ -24,7 +50,7 @@ class Network:
         if name_or_chain_id.startswith("0x"):
             name_or_chain_id = str(int(name_or_chain_id, 16))
         if name_or_chain_id not in network_id_map:
-            raise ValueError(NETWORK_INITIALIZATION_ERROR)
+            raise ValueError(NETWORK_INITIALIZATION_ERROR(network_id_map))
         else:
             if name_or_chain_id.isdigit():
                 self.chain_id = name_or_chain_id

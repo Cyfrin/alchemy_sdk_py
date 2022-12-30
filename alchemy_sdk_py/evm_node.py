@@ -45,8 +45,8 @@ class EVM_Node:
             raise ValueError(NO_API_KEY_ERROR)
         self.api_key = api_key
         self.network = Network(network)
-        url_network_name = self.network.name.replace("_", "-")
-        self.base_url_without_key = f"https://{url_network_name}.g.alchemy.com/v2/"
+        self.url_network_name = self.network.name.replace("_", "-")
+        self.base_url_without_key = f"https://{self.url_network_name}.g.alchemy.com/v2/"
         self.base_url = (
             f"{self.base_url_without_key}{self.api_key}" if url is None else url
         )
@@ -140,8 +140,8 @@ class EVM_Node:
         json_response = self._handle_api_call(payload)
         return json_response.get("result")
 
-    def get_current_block(self) -> int:
-        """
+    def get_current_block_number(self) -> int:
+        """Returns the current block number
         params:
             None
         returns:
@@ -153,7 +153,7 @@ class EVM_Node:
         return result
 
     def block_number(self) -> int:
-        return self.get_current_block()
+        return self.get_current_block_number()
 
     def get_balance(
         self,
@@ -369,6 +369,14 @@ class EVM_Node:
         }
         json_response = self._handle_api_call(payload)
         return json_response.get("result", {})
+
+    def get_current_block(self) -> dict:
+        """
+        returns:
+            current block data
+        """
+        current_block: int = self.get_current_block_number()
+        return self.get_block_by_number(current_block)
 
     def get_transaction_by_hash(self, transaction_hash: str) -> dict:
         """Returns the information about a transaction requested by transaction hash.
@@ -808,19 +816,32 @@ class EVM_Node:
     ################ Internal/Raw Methods ######################
     ############################################################
 
-    def _handle_api_call(self, payload: dict, endpoint: Optional[str] = None) -> dict:
+    def _handle_api_call(
+        self,
+        payload: dict,
+        endpoint: Optional[str] = None,
+        url: Optional[str] = None,
+    ) -> dict:
+        """Handles making the API calls to Alchemy... It should be refactored, it's gross
+
+        params:
+            payload: the payload to send to the API
+            endpoint: the endpoint to send the payload to
+            url: the url to send the payload to
+            http_method: the http method to use
+        returns: a dictionary of the response
+        """
+        url = self.base_url if url is None else url
         headers = HEADERS
         if endpoint is not None:
             headers["Alchemy-Python-Sdk-Method"] = endpoint
-        response = requests.post(
-            self.base_url, json=payload, headers=headers, proxies=self.proxy
-        )
+        response = requests.post(url, json=payload, headers=headers, proxies=self.proxy)
         if response.status_code != 200:
             retries_here = 0
             while retries_here < self.retries and response.status_code != 200:
                 retries_here = retries_here + 1
                 response = requests.post(
-                    self.base_url, json=payload, headers=headers, proxies=self.proxy
+                    url, json=payload, headers=headers, proxies=self.proxy
                 )
             if response.status_code != 200:
                 raise ConnectionError(

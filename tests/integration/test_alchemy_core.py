@@ -3,6 +3,9 @@ from tests.test_data import (
     CHAINLINK_CREATOR,
     VITALIK,
     PATRICK_ALPHA_C,
+    ENS,
+    ETH_BLOCKS,
+    PATRICK_ALPHA_C_TOKEN_ID_ENS,
 )
 
 
@@ -13,9 +16,9 @@ def test_set_api_key(alchemy, mock_env_missing):
     assert alchemy.api_key == "Hello"
 
 
-def test_get_current_block(alchemy_with_key):
+def test_get_current_block_number(alchemy_with_key):
     # Arrange / Act
-    current_block = alchemy_with_key.get_current_block()
+    current_block = alchemy_with_key.get_current_block_number()
     # Assert
     assert current_block > 0
 
@@ -97,7 +100,7 @@ def test_get_max_priority_fee_per_gas(alchemy_with_key):
 
 
 def test_get_fee_history(alchemy_with_key):
-    current_block = int(alchemy_with_key.get_current_block())
+    current_block = int(alchemy_with_key.get_current_block_number())
     response = alchemy_with_key.get_fee_history(1, current_block)
     assert len(response["baseFeePerGas"]) > 0
 
@@ -136,4 +139,124 @@ def test_get_token_metadata(alchemy_with_key):
 def test_send(alchemy_with_key):
     hash = "0x7ac79af930a26f05ef3ae4b3f9e38cb7323696232aea00e3d3e04394ab1c7234"
     response = alchemy_with_key.send("eth_getTransactionByHash", [hash])
+    assert response["from"].lower() == PATRICK_ALPHA_C.lower()
+
+
+def test_get_nfts(alchemy_with_key):
+    response = alchemy_with_key.get_nfts_for_owner(PATRICK_ALPHA_C)
+    assert response["totalCount"] > 0
+
+
+def test_get_owners_for_token(alchemy_with_key):
+    response = alchemy_with_key.get_owners_for_token(
+        ENS,
+        PATRICK_ALPHA_C_TOKEN_ID_ENS,
+    )
+    assert response["owners"][0].lower() == PATRICK_ALPHA_C.lower()
+
+
+def test_get_owners_for_nft(alchemy_with_key):
+    response = alchemy_with_key.get_owners_for_nft(
+        ENS,
+        PATRICK_ALPHA_C_TOKEN_ID_ENS,
+    )
+    assert response["owners"][0].lower() == PATRICK_ALPHA_C.lower()
+
+
+# I don't think spam filter is working
+# def test_get_nfts_spam_check(alchemy_with_key):
+#     with_spam = alchemy_with_key.get_nfts(PATRICK_ALPHA_C)
+#     no_spam = alchemy_with_key.get_nfts(
+#         PATRICK_ALPHA_C, exclude_filters=["SPAM", "AIRDROPS"]
+#     )
+#     assert with_spam["totalCount"] != no_spam["totalCount"]
+
+
+def test_get_owners_for_collection(alchemy_with_key):
+    current_block_number = alchemy_with_key.get_current_block_number()
+    response = alchemy_with_key.get_owners_for_collection(
+        ETH_BLOCKS, False, current_block_number
+    )
+    assert len(response["ownerAddresses"]) > 0
+
+
+def test_get_owners_for_contract(alchemy_with_key):
+    current_block_number = alchemy_with_key.get_current_block_number()
+    response = alchemy_with_key.get_owners_for_contract(
+        ETH_BLOCKS, False, current_block_number
+    )
+    assert len(response["ownerAddresses"]) > 0
+
+
+def test_is_holder_of_collection(alchemy_with_key):
+    response = alchemy_with_key.is_holder_of_collection(PATRICK_ALPHA_C, ETH_BLOCKS)
+    # Unless I buy one...
+    assert response["isHolderOfCollection"] is False
+
+
+def test_get_contracts_for_owner(alchemy_with_key):
+    response = alchemy_with_key.get_contracts_for_owner(PATRICK_ALPHA_C)
+    assert len(response["contracts"]) > 0
+
+
+def test_get_nft_metadata(alchemy_with_key):
+    response = alchemy_with_key.get_nft_metadata(ENS, PATRICK_ALPHA_C_TOKEN_ID_ENS)
+    assert response["title"].lower() == "patrickalphac.eth"
+
+
+def test_get_contract_metadata(alchemy_with_key):
+    response = alchemy_with_key.get_contract_metadata(ENS)
+    assert (
+        response["contractMetadata"]["openSea"]["collectionName"]
+        == "ENS: Ethereum Name Service"
+    )
+
+
+def test_get_nfts_for_contract(alchemy_with_key):
+    response = alchemy_with_key.get_nfts_for_contract(ENS, limit=5)
+    assert len(response["nfts"]) == 5
+
+
+def test_get_nfts_for_collection(alchemy_with_key):
+    response = alchemy_with_key.get_nfts_for_collection(ENS, limit=5)
+    assert len(response["nfts"]) == 5
+
+
+def test_get_spam_contracts(alchemy_with_key):
+    response = alchemy_with_key.get_spam_contracts()
+    assert len(response) > 0
+
+
+def test_is_spam_contract(alchemy_with_key):
+    response = alchemy_with_key.is_spam_contract(ENS)
+    assert response is False
+
+
+def test_refresh_contract(alchemy_with_key):
+    response = alchemy_with_key.refresh_contract(ENS)
+    assert "reingestionState" in response
+
+
+def test_get_floor_price(alchemy_with_key):
+    response = alchemy_with_key.get_floor_price(ENS)
+    assert "openSea" in response
+    assert "floorPrice" in response["openSea"]
+
+
+# Something going wrong here, idk
+# def test_compute_rarity(alchemy_with_key):
+#     response = alchemy_with_key.compute_rarity(ENS, PATRICK_ALPHA_C_TOKEN_ID_ENS)
+#     assert "rarity" in response
+
+
+def test_verify_nft_ownership(alchemy_with_key):
+    response = alchemy_with_key.verify_nft_ownership(PATRICK_ALPHA_C, ENS)
+    # find ENS key ignoring caps and case
+    assert response[ENS.lower()] == True
+
+
+def test_alchemy_get_transaction(alchemy_with_key):
+    response = alchemy_with_key.get_transaction(
+        "0x7ac79af930a26f05ef3ae4b3f9e38cb7323696232aea00e3d3e04394ab1c7234"
+    )
     assert response["from"].lower() == PATRICK_ALPHA_C.lower()

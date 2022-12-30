@@ -1,4 +1,4 @@
-from .sdk_settings import network_id_map
+# Don't import anything into this file otherwise you'll do a circule import
 
 NO_API_KEY_ERROR: str = (
     "A valid Alchemy API key must be provided "
@@ -9,7 +9,10 @@ NO_API_KEY_ERROR: str = (
     "https://alchemy.com/?a=673c802981"
 )
 
-NETWORK_INITIALIZATION_ERROR: str = (
-    "Network has been given a poor name or chain ID."
-    f"Please use one of the following options: {network_id_map.keys()}"
-)
+
+def NETWORK_INITIALIZATION_ERROR(network_id_map):
+    str = (
+        "Network has been given a poor name or chain ID."
+        f"Please use one of the following options: {network_id_map.keys()}"
+    )
+    return str
