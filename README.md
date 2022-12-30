@@ -1,4 +1,4 @@
-# alchemy_sdk_py (Pre-Alpha)
+# alchemy_sdk_py (Beta)
 An SDK to use the [Alchemy API](https://www.alchemy.com/)
 
 
