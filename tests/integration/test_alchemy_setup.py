@@ -1,6 +1,6 @@
 from alchemy_sdk_py import Alchemy
-import pytest
 import os
+import pytest
 
 
 def test_initialize_empty_network(dummy_api_key, mock_env_missing):

@@ -1,11 +1,11 @@
+import requests
+import time
 from datetime import datetime
 from typing import List, Optional, Tuple, Union
 from .errors import NO_API_KEY_ERROR
-from .networks import Network
-from .utils import HexIntStringNumber, ETH_NULL_VALUE, is_hash, is_hex_int
 from .evm_node import POSSIBLE_BLOCK_TAGS, EVM_Node, HEADERS
-import requests
-import time
+from .networks import Network
+from .utils import HexIntStringNumber, ETH_NULL_VALUE, is_hash
 
 NFT_FILTERS = ["SPAM", "AIRDROPS"]
 
