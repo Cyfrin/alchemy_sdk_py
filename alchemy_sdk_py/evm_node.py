@@ -1,5 +1,5 @@
 import os
-from typing import Optional, Union
+from typing import List, Optional, Union
 from alchemy_sdk_py.utils import HexIntStringNumber, is_hash
 from .errors import NO_API_KEY_ERROR
 from .networks import Network
@@ -711,7 +711,7 @@ class EVM_Node:
         return self.gas_price()
 
     # Unsupported by Alchemy
-    # def get_compilers(self) -> list[str]:
+    # def get_compilers(self) -> List[str]:
     #     """
     #     params:
     #         None
@@ -729,7 +729,7 @@ class EVM_Node:
     #     return result
 
     # Unsupported by Alchemy
-    # def get_work(self) -> list[str]:
+    # def get_work(self) -> List[str]:
     #     """
     #     params:
     #         None
@@ -749,7 +749,7 @@ class EVM_Node:
     def get_logs(
         self,
         contract_address: str,
-        topics: Union[list[str], str],
+        topics: Union[List[str], str],
         from_block: Union[str, int, None] = 0,
         to_block: Union[str, int, None] = "latest",
     ) -> list:
@@ -758,7 +758,7 @@ class EVM_Node:
     def get_events(
         self,
         contract_address: str,
-        topics: Union[list[str], str],
+        topics: Union[List[str], str],
         from_block: Union[str, int, None] = 0,
         to_block: Union[str, int, None] = "latest",
     ) -> list:

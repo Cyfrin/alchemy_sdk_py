@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional, Tuple, Union
+from typing import List, Optional, Tuple, Union
 from .errors import NO_API_KEY_ERROR
 from .networks import Network
 from .utils import HexIntStringNumber, ETH_NULL_VALUE, is_hash, is_hex_int
@@ -156,7 +156,7 @@ class Alchemy(EVM_Node):
         from_block: Union[int, str, None] = 0,
         to_block: Union[int, str, None] = None,
         contract_addresses: Optional[list] = None,
-        category: Optional[list[str]] = [
+        category: Optional[List[str]] = [
             "external",
             "internal",
             "erc20",
@@ -202,7 +202,7 @@ class Alchemy(EVM_Node):
         max_count: Union[int, str, None] = 1000,
         page_key: Optional[str] = None,
         contract_addresses: Optional[list] = None,
-        category: Optional[list[str]] = [
+        category: Optional[List[str]] = [
             "external",
             "internal",
             "erc20",
@@ -433,7 +433,7 @@ class Alchemy(EVM_Node):
     def get_token_balances(
         self,
         address: str,
-        token_addresses_or_type: Union[list[str], str, None] = None,
+        token_addresses_or_type: Union[List[str], str, None] = None,
         options_or_page_key: Union[dict, str, None] = None,
     ) -> dict:
         """
@@ -520,10 +520,10 @@ class Alchemy(EVM_Node):
         owner: str,
         page_key: Optional[str] = None,
         page_size: Optional[int] = 100,
-        contract_addresses: Optional[list[str]] = None,
+        contract_addresses: Optional[List[str]] = None,
         omit_metadata: Optional[bool] = False,
         token_uri_timeout_in_ms: Union[int, None] = None,
-        filters: Optional[list[str]] = None,
+        filters: Optional[List[str]] = None,
     ) -> dict:
         """Gets all NFTs currently owned by a given address.
 
@@ -553,11 +553,11 @@ class Alchemy(EVM_Node):
         owner: str,
         page_key: Optional[str] = None,
         page_size: Optional[int] = 100,
-        contract_addresses: Optional[list[str]] = None,
+        contract_addresses: Optional[List[str]] = None,
         with_metadata: Optional[bool] = False,
         token_uri_timeout_in_ms: Union[int, None] = None,
-        exclude_filters: Optional[list[str]] = None,
-        include_filters: Optional[list[str]] = None,
+        exclude_filters: Optional[List[str]] = None,
+        include_filters: Optional[List[str]] = None,
         order_by: Optional[str] = None,
     ) -> dict:
         """Gets all NFTs currently owned by a given address.
@@ -691,8 +691,8 @@ class Alchemy(EVM_Node):
         owner: str,
         page_key: Optional[str] = None,
         page_size: Optional[int] = 100,
-        include_filters: Optional[list[str]] = None,
-        exclude_filters: Optional[list[str]] = None,
+        include_filters: Optional[List[str]] = None,
+        exclude_filters: Optional[List[str]] = None,
         order_by: Optional[str] = None,
     ) -> dict:
         """Gets all contracts for a given owner.
@@ -701,8 +701,8 @@ class Alchemy(EVM_Node):
             owner (str): Owner address to check
             page_key (Optional[str], optional): Page key to get the next page of results. Defaults to None.
             page_size (Optional[int], optional): Page size to get the next page of results. Defaults to 100.
-            include_filters (Optional[list[str]], optional): Optional list of strings from "SPAM" and "AIRDROPS". Defaults to None.
-            exclude_filters (Optional[list[str]], optional): Optional list of strings from "SPAM" and "AIRDROPS". Defaults to None.
+            include_filters (Optional[List[str]], optional): Optional list of strings from "SPAM" and "AIRDROPS". Defaults to None.
+            exclude_filters (Optional[List[str]], optional): Optional list of strings from "SPAM" and "AIRDROPS". Defaults to None.
             order_by (Optional[str], optional): Optional string to order by "transferTime" or None. Defaults to None.
 
         Returns:
@@ -956,7 +956,7 @@ class Alchemy(EVM_Node):
         return json_response
 
     def verify_nft_ownership(
-        self, wallet_address: str, contract_addresses: Union[str, list[str]]
+        self, wallet_address: str, contract_addresses: Union[str, List[str]]
     ) -> dict:
         """Verifies if a wallet owns a given NFT.
 

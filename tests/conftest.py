@@ -21,7 +21,7 @@ def alchemy_with_key() -> Alchemy:
 
 @pytest.fixture
 def mock_env_missing(monkeypatch: MonkeyPatch):
-    """A plugin from pytest to help saftely mock and delete environment variables.
+    """A plugin from pytest to help safely mock and delete environment variables.
 
     Args:
         monkeypatch (_pytest.monkeypatch.MonkeyPatch): _description_

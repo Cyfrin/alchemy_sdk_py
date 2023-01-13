@@ -12,7 +12,7 @@ NO_API_KEY_ERROR: str = (
 
 def NETWORK_INITIALIZATION_ERROR(network_id_map):
     str = (
-        "Network has been given a poor name or chain ID."
+        "Network has been given a poor name or chain ID. "
         f"Please use one of the following options: {network_id_map.keys()}"
     )
     return str
