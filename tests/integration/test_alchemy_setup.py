@@ -40,6 +40,8 @@ def test_api_key_property(dummy_api_key):
 
 def test_key_with_environment_variable():
     test_key = "test_key"
+    original_value = os.environ["ALCHEMY_API_KEY"]
     os.environ["ALCHEMY_API_KEY"] = test_key
     alchemy = Alchemy()
     assert alchemy.key == test_key
+    os.environ["ALCHEMY_API_KEY"] = original_value
