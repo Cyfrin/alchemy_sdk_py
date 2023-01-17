@@ -2,7 +2,7 @@ import os
 import requests
 from dotenv import load_dotenv
 from typing import List, Optional, Union
-from utils import HexIntStringNumber
+from .utils import HexIntStringNumber
 from .errors import NO_API_KEY_ERROR
 from .networks import Network
 
