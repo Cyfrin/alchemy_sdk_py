@@ -1,6 +1,7 @@
-from alchemy_sdk_py import Alchemy
-import pytest
 import os
+import pytest
+from alchemy_sdk_py import Alchemy
+from _pytest.monkeypatch import MonkeyPatch
 
 
 def test_initialize_empty_network(dummy_api_key, mock_env_missing):
@@ -38,8 +39,8 @@ def test_api_key_property(dummy_api_key):
     assert alchemy.key == dummy_api_key
 
 
-def test_key_with_environment_variable():
+def test_key_with_environment_variable(monkeypatch: MonkeyPatch):
     test_key = "test_key"
-    os.environ["ALCHEMY_API_KEY"] = test_key
+    monkeypatch.setenv("ALCHEMY_API_KEY", test_key)
     alchemy = Alchemy()
     assert alchemy.key == test_key

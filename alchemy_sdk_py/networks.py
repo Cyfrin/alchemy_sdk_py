@@ -1,5 +1,5 @@
-from .errors import NETWORK_INITIALIZATION_ERROR
 from typing import Union
+from .errors import NETWORK_INITIALIZATION_ERROR
 
 network_id_map = {
     "eth_mainnet": "1",
