@@ -1,10 +1,12 @@
 import os
+from typing import List, Optional, Union
+
 import requests
 from dotenv import load_dotenv
-from typing import List, Optional, Union
-from .utils import HexIntStringNumber
+
 from .errors import NO_API_KEY_ERROR
 from .networks import Network
+from .utils import HexIntStringNumber
 
 load_dotenv()
 
@@ -776,6 +778,7 @@ class EVM_Node:
         to_block_hex = to_block
         if from_block not in POSSIBLE_BLOCK_TAGS:
             from_block_hex = HexIntStringNumber(from_block).hex
+        if to_block not in POSSIBLE_BLOCK_TAGS:
             to_block_hex = HexIntStringNumber(to_block).hex
         payload = {
             "id": self.call_id,
